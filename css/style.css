@@ -1,0 +1,136 @@
+.top {
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-top: 18px;
+  background-color: #ffffff;
+  width: 100%;
+}
+
+.listPeople {
+  width: 45px;
+  height: 45px;
+}
+
+.menuLateral {
+    width: 250px;
+    height: 100%;
+    background-color: #ffffff;
+    border-left: 1px solid #ddd;
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 20px;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+    z-index: 5;
+  }
+
+  .menuLateral.fechado {
+    transform: translateX(100%); 
+  }
+
+  .menuLateral.aberto {
+    transform: translateX(0); 
+  }
+
+.menuLateral .subtitulo {
+  margin-bottom: 15px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #333;
+}
+
+.menuLateral .subtitulo p {
+  text-align: center;
+}
+
+.configMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contato {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.contato:hover {
+  background-color: #f5f5f5;
+}
+
+.contato ion-icon {
+  font-size: 25px;
+}
+
+.contatoText {
+  font-size: 14px;
+}
+
+.people {
+  font-size: 18px;
+}
+
+
+.escreverMensagem {
+  display: flex;
+  justify-content: space-around;
+}
+
+.message-input {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #f2f2f2;
+}
+
+.message-input input {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+}
+
+.enviar {
+  width: 20px;
+  height: 20px;
+  padding-inline: 3px;
+}
+
+.status {
+  font-size: 10px;
+  color: #888;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    transition: opacity 0.5s ease;
+    opacity: 0;
+    pointer-events: none; 
+  }
+
+  .overlay.visivel {
+    opacity: 1;
+  }
+
+  .overlay.escondido {
+    display: none;
+  }
