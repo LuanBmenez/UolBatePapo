@@ -8,21 +8,19 @@ const urlMensagens = `https://mock-api.driven.com.br/api/v6/uol/messages/${ID}`;
 
 
 
+const abrirmenu = document.getElementById("people");
+const fechar = document.getElementById("fechar");
+const menu = document.getElementById("menuLateral");
+
+abrirmenu.addEventListener("click", toggleMenu);
+fechar.addEventListener("click", toggleMenu);
+
 function toggleMenu() {
-    
-    const menu = document.getElementById("menuLateral");
-    const abrirmenu = document.getElementById("people");
-    const fechar = document.getElementById("fechar")
-
-
     const Open = menu.classList.contains("aberto");
 
 
     menu.classList.toggle("aberto", !Open);
     menu.classList.toggle("fechado", Open);
-    
-    abrirmenu.addEventListener("click", toggleMenu);
-    fechar.addEventListener("click",toggleMenu )
 }
 
 toggleMenu()
@@ -54,3 +52,59 @@ function pedirNovoNome() {
 }
 
 entrarNaSala(username);
+
+let tentativasReconexao = 0;
+const maxTentativas = 3;
+
+function verificarStatusConexao() {
+    const data = { name: username };
+
+    axios.post(urlStatus, data)
+        .then(response => {
+            console.log('Status online enviado com sucesso!', response);
+            tentativasReconexao = 0; // Reseta as tentativas após sucesso
+        })
+        .catch(error => {
+            console.log('Erro ao enviar status online', error);
+
+            if (tentativasReconexao < maxTentativas) {
+                tentativasReconexao++;
+                console.log(`Tentativa de reconexão ${tentativasReconexao}/${maxTentativas}`);
+            } else {
+                alert("Conexão perdida. Por favor, entre novamente.");
+                window.location.reload();
+            }
+        });
+}
+
+setInterval(verificarStatusConexao, 5000);
+
+function formatarHora() {
+    const agora = new Date();
+    const horas = agora.getHours().toString().padStart(2, "0");
+    const minutos = agora.getMinutes().toString().padStart(2, "0");
+    const segundos = agora.getSeconds().toString().padStart(2, "0");
+    return `${horas}:${minutos}:${segundos}`;
+}
+
+function enviarMensagem() {
+    const input = document.querySelector(".enviarMensagem");
+    const msg = input.value;
+
+    const novaMensagem = {
+        from: username,
+        to: destinatario,
+        text: msg,
+        type: tipo
+    };
+
+    axios.post(urlMensagens, novaMensagem)
+    .then(response => {
+        console.log("Mensagem enviada com sucesso!", response);
+        renderizarMensagem(novaMensagem.from, novaMensagem.to, novaMensagem.text, novaMensagem.type, formatarHora());
+    })
+    .catch(error => {
+        console.log("Erro ao enviar mensagem:", error);
+    });
+    input.value = "";
+}

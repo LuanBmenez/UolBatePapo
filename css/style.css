@@ -86,14 +86,14 @@
   justify-content: space-around;
 }
 
-.message-input {
+.messageInput {
   display: flex;
   align-items: center;
   padding: 10px;
   background-color: #f2f2f2;
 }
 
-.message-input input {
+.enviarMensagem {
   flex: 1;
   padding: 8px;
   font-size: 14px;
