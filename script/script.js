@@ -6,7 +6,8 @@ const urlParticipantes = `https://mock-api.driven.com.br/api/v6/uol/participants
 const urlStatus = `https://mock-api.driven.com.br/api/v6/uol/status/${ID}`;
 const urlMensagens = `https://mock-api.driven.com.br/api/v6/uol/messages/${ID}`;
 
-
+let destinatario = "Todos"; 
+let tipo = "message";
 
 const abrirmenu = document.getElementById("people");
 const fechar = document.getElementById("fechar");
@@ -108,3 +109,33 @@ function enviarMensagem() {
     });
     input.value = "";
 }
+
+function renderizarMensagem(from, to, text, type, time) {
+    const ul = document.querySelector(".mensagem");
+    const li = document.createElement("li");
+    let backgroundColor;
+    let mensagemTexto;
+
+    if (type === "status") {
+        backgroundColor = "rgba(220, 220, 220, 1)";
+        mensagemTexto = `${from} ${text}`;
+    } else if (type === "private_message") {
+        if ((from === username && to === destinatario) || (from === destinatario && to === username)) {
+            backgroundColor = "rgba(255, 222, 222, 1)";
+            mensagemTexto = `(${time}) ${from} reservadamente para ${to}: ${text}`;
+        } else {
+            return; // Ignora a mensagem se não for para o usuário ou destinatário específico
+        }
+    } else {
+        backgroundColor = "rgba(255, 255, 255, 1)";
+        mensagemTexto = `(${time}) ${from} para ${to}: ${text}`;
+    }
+
+    li.style.backgroundColor = backgroundColor;
+    li.textContent = mensagemTexto;
+
+    ul.appendChild(li);
+    li.scrollIntoView();
+}
+
+document.querySelector(".enviar").addEventListener("click", enviarMensagem);
