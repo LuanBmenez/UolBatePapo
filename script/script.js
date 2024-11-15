@@ -1,5 +1,5 @@
 let username = prompt("Seu lindo nome: ");
-const ID = "3184ce15-e740-4b0a-ad9c-bc3a8b767424";
+const ID = "126c19ca-819c-4452-8a1c-9dee14129abd";
 
 
 const urlParticipantes = `https://mock-api.driven.com.br/api/v6/uol/participants/${ID}`;
@@ -25,7 +25,7 @@ function toggleMenu() {
     menu.classList.toggle("fechado", Open);
 }
 
-toggleMenu()
+
 
 function entrarNaSala(username) {
     const novoUsuario = { name: username };
@@ -98,7 +98,7 @@ function enviarMensagem() {
             if (tipo === "private_message") {
                 renderizarMensagem(novaMensagem.from, novaMensagem.to, novaMensagem.text, novaMensagem.type, formatarHora());
             } else {
-                renderizarMensagem(novaMensagem.from, novaMensagem.to, novaMensagem.text, novaMensagem.type, formatarHora());//os dois estão fazendo a mesma coisa
+                renderizarMensagem(novaMensagem.from, novaMensagem.to, novaMensagem.text, novaMensagem.type, formatarHora());
             }
         })
         .catch(error => {
@@ -118,15 +118,18 @@ function renderizarMensagem(from, to, text, type, time) {
         li.style.backgroundColor = "rgba(220, 220, 220, 1)";
         li.innerHTML = `<strong>${from}</strong>  &nbsp;${text}`;
     } else if (type === "private_message") {
-        if ((from === username && to === destinatario) || (from === destinatario && to === username)) {
+        if (
+            (from.toLowerCase() === username.toLowerCase() && to.toLowerCase() === destinatario.toLowerCase()) ||
+            (from.toLowerCase() === destinatario.toLowerCase() && to.toLowerCase() === username.toLowerCase())
+        ) {
             li.style.backgroundColor = "rgba(255, 222, 222, 1)";
-            li.innerHTML = `(${time}) <strong>${from}</strong>&nbsp;reservadamente para &nbsp;<strong>${to}</strong>: ${text}`;
+            li.innerHTML = `(${time}) <strong>${from}</strong>&nbsp;reservadamente para&nbsp;<strong>${to}</strong>: ${text}`;
         } else {
             return; 
         }
     } else {
         li.style.backgroundColor = "rgba(255, 255, 255, 1)";
-        li.innerHTML = `(${time}) <strong>${from}</strong>&nbsp;para&nbsp;<strong>${to}</strong> : ${text}`;
+        li.innerHTML = `(${time}) <strong>${from}</strong>&nbsp;para&nbsp;<strong>${to}</strong>: ${text}`;
     }
 
     ul.appendChild(li);
@@ -137,19 +140,29 @@ function renderizarMensagem(from, to, text, type, time) {
 document.querySelector(".enviar").addEventListener("click", enviarMensagem);
 
 
-function buscarMensagensAnteriores() {
+const mensagensExibidas = new Set(); 
 
+function buscarMensagensAnteriores() {
     const ul = document.querySelector(".mensagem");
-    ul.innerHTML = "";  
 
     axios.get(urlMensagens)
         .then(response => {
             console.log("Mensagens carregadas com sucesso!", response);
             const mensagens = response.data;
 
-   
             mensagens.forEach(mensagem => {
-                renderizarMensagem(mensagem.from, mensagem.to, mensagem.text, mensagem.type, mensagem.time);
+        
+                const mensagemId = `${mensagem.from}-${mensagem.to}-${mensagem.text}-${mensagem.time}`;
+                
+             
+                if (!mensagensExibidas.has(mensagemId)) {
+                    mensagensExibidas.add(mensagemId); 
+
+                  
+                    if (!(mensagem.from === username && mensagem.to === destinatario && mensagem.type === tipo)) {
+                        renderizarMensagem(mensagem.from, mensagem.to, mensagem.text, mensagem.type, mensagem.time);
+                    }
+                }
             });
         })
         .catch(error => {
@@ -203,7 +216,7 @@ function marcarOpcao(idElementoClicado) {
             checkIcon.classList.remove('escondido');
             tipo = idElementoClicado === "opcaoPrivado" ? "private_message" : "message";
             
-            // Atualiza o texto do span
+           
             if (idElementoClicado === "opcaoPrivado") {
                 enviandoParaSpan.textContent = `Enviando para ${destinatario} (reservadamente)`;
             } else {
@@ -262,4 +275,3 @@ buscarParticipantes()
 setInterval(buscarParticipantes, 10000);
 
 setInterval(buscarMensagensAnteriores, 3000);
-buscarMensagensAnteriores(); 
